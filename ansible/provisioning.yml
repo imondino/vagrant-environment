@@ -1,0 +1,15 @@
+- hosts: all
+  become: true
+
+  tasks:
+  - name: Create admins group
+    group: name=admins system=yes state=present
+
+  - name: Create user nacho
+    user: name=nacho  shell=/bin/bash  groups=admins append=yes comment="nacho"
+
+  - name: Give keys
+    authorized_key: user=nacho key="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDMChMLJ5ozyRc4BYOLs896oXdvaHU1pJNRlt0kMxh9v3sXAc9Cc34j8BsrjBYjrE+CO1jB8kQg6oifrgjcOtCInMrAUX3FpsdY0ndSmi4z+y8jUMTpoH1B4PY8zuU2RZzcVam4SfUnXbGJSOxX+U28TrcmJkTBy2xCwJ6Z/fvlYmYvlly/iF8YBKACSQOEPmVvujxwmCj+kOoHVEUKH8I1bG/I0daWWaMfsQM0dfYZnG1AO30Nzsdk+l/On5Bbde5ggDJnMIS9FNeoMwtvZqYMrxZ7C+JUACU8viHUk/W4kQ9k4mVCLQas8bHTt/ha5mCleG8tO8RsrY1FsNLMr+xp nacho@penny"
+
+  - name: Make sure we can sudo as admin group
+    lineinfile: dest=/etc/sudoers.d/98_admins state=present create=yes regexp='^%admins' line='%admins ALL=(ALL) NOPASSWD:ALL'
